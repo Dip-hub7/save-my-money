@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3 Friends Money Saver</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f2f2f2;
+      padding: 50px;
+      text-align: center;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: inline-block;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 200px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin-left: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .friend-info {
+      margin: 20px 0;
+    }
+
+    #notification {
+      margin-top: 20px;
+      background-color: #dff0d8;
+      color: #3c763d;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+
+    #totals {
+      margin-top: 30px;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>3 Friends Money Saver</h2>
+
+    <!-- Friend 1 Input -->
+    <div class="friend-info">
+      <input type="number" id="friend1" placeholder="Friend 1 Amount">
+      <button onclick="saveMoney('friend1')">Save for Friend 1</button>
+      <div id="totalFriend1">Friend 1 Total: ₹0</div>
+    </div>
+
+    <!-- Friend 2 Input -->
+    <div class="friend-info">
+      <input type="number" id="friend2" placeholder="Friend 2 Amount">
+      <button onclick="saveMoney('friend2')">Save for Friend 2</button>
+      <div id="totalFriend2">Friend 2 Total: ₹0</div>
+    </div>
+
+    <!-- Friend 3 Input -->
+    <div class="friend-info">
+      <input type="number" id="friend3" placeholder="Friend 3 Amount">
+      <button onclick="saveMoney('friend3')">Save for Friend 3</button>
+      <div id="totalFriend3">Friend 3 Total: ₹0</div>
+    </div>
+
+    <div id="notification">Money Saved Successfully!</div>
+
+    <div id="totals">
+      <h3>All Friends' Total Savings</h3>
+      <div id="totalAllFriends">Total: ₹0</div>
+    </div>
+  </div>
+
+  <script>
+    let totalFriend1 = 0, totalFriend2 = 0, totalFriend3 = 0;
+
+    function saveMoney(friend) {
+      const amount = parseInt(document.getElementById(friend).value);
+      if (!isNaN(amount) && amount > 0) {
+        if (friend === 'friend1') {
+          totalFriend1 += amount;
+          document.getElementById('totalFriend1').innerText = `Friend 1 Total: ₹${totalFriend1}`;
+        } else if (friend === 'friend2') {
+          totalFriend2 += amount;
+          document.getElementById('totalFriend2').innerText = `Friend 2 Total: ₹${totalFriend2}`;
+        } else if (friend === 'friend3') {
+          totalFriend3 += amount;
+          document.getElementById('totalFriend3').innerText = `Friend 3 Total: ₹${totalFriend3}`;
+        }
+
+        document.getElementById(friend).value = '';  // Clear input field
+        showNotification("Money Saved Successfully!");
+        updateTotal();
+      } else {
+        showNotification("Please enter a valid amount.");
+      }
+    }
+
+    function showNotification(message) {
+      const note = document.getElementById('notification');
+      note.innerText = message;
+      note.style.display = 'block';
+      setTimeout(() => {
+        note.style.display = 'none';
+      }, 2000);
+    }
+
+    function updateTotal() {
+      const totalAll = totalFriend1 + totalFriend2 + totalFriend3;
+      document.getElementById('totalAllFriends').innerText = `Total: ₹${totalAll}`;
+    }
+  </script>
+
+</body>
+</html>
