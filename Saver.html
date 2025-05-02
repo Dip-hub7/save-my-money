@@ -92,28 +92,43 @@
   </div>
 
   <script>
-    let totalFriend1 = 0, totalFriend2 = 0, totalFriend3 = 0;
+    // Load totals from localStorage
+    let totalFriend1 = parseInt(localStorage.getItem('totalFriend1')) || 0;
+    let totalFriend2 = parseInt(localStorage.getItem('totalFriend2')) || 0;
+    let totalFriend3 = parseInt(localStorage.getItem('totalFriend3')) || 0;
+
+    // Update display on page load
+    updateDisplay();
 
     function saveMoney(friend) {
       const amount = parseInt(document.getElementById(friend).value);
       if (!isNaN(amount) && amount > 0) {
         if (friend === 'friend1') {
           totalFriend1 += amount;
-          document.getElementById('totalFriend1').innerText = `Friend 1 Total: ₹${totalFriend1}`;
+          localStorage.setItem('totalFriend1', totalFriend1);
         } else if (friend === 'friend2') {
           totalFriend2 += amount;
-          document.getElementById('totalFriend2').innerText = `Friend 2 Total: ₹${totalFriend2}`;
+          localStorage.setItem('totalFriend2', totalFriend2);
         } else if (friend === 'friend3') {
           totalFriend3 += amount;
-          document.getElementById('totalFriend3').innerText = `Friend 3 Total: ₹${totalFriend3}`;
+          localStorage.setItem('totalFriend3', totalFriend3);
         }
 
-        document.getElementById(friend).value = '';  // Clear input field
+        document.getElementById(friend).value = '';
         showNotification("Money Saved Successfully!");
-        updateTotal();
+        updateDisplay();
       } else {
         showNotification("Please enter a valid amount.");
       }
+    }
+
+    function updateDisplay() {
+      document.getElementById('totalFriend1').innerText = `Friend 1 Total: ₹${totalFriend1}`;
+      document.getElementById('totalFriend2').innerText = `Friend 2 Total: ₹${totalFriend2}`;
+      document.getElementById('totalFriend3').innerText = `Friend 3 Total: ₹${totalFriend3}`;
+
+      const totalAll = totalFriend1 + totalFriend2 + totalFriend3;
+      document.getElementById('totalAllFriends').innerText = `Total: ₹${totalAll}`;
     }
 
     function showNotification(message) {
@@ -124,12 +139,8 @@
         note.style.display = 'none';
       }, 2000);
     }
-
-    function updateTotal() {
-      const totalAll = totalFriend1 + totalFriend2 + totalFriend3;
-      document.getElementById('totalAllFriends').innerText = `Total: ₹${totalAll}`;
-    }
   </script>
+
 
 </body>
 </html>
