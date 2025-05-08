@@ -82,6 +82,15 @@
       color: #444;
     }
 
+.history {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+  text-align: left;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
     @media (max-width: 600px) {
       .container {
         padding: 20px;
@@ -127,55 +136,94 @@
       <div id="totalAllFriends">Total: ₹0</div>
     </div>
   </div>
+<div id="historyFriend1" class="history"></div>
+<div id="historyFriend2" class="history"></div>
+<div id="historyFriend3" class="history"></div>
 
   <script>
-    // Load totals from localStorage
-    let totalFriend1 = parseInt(localStorage.getItem('totalFriend1')) || 0;
-    let totalFriend2 = parseInt(localStorage.getItem('totalFriend2')) || 0;
-    let totalFriend3 = parseInt(localStorage.getItem('totalFriend3')) || 0;
+    <script>
+  // Load totals and histories
+  let totalFriend1 = parseInt(localStorage.getItem('totalFriend1')) || 0;
+  let totalFriend2 = parseInt(localStorage.getItem('totalFriend2')) || 0;
+  let totalFriend3 = parseInt(localStorage.getItem('totalFriend3')) || 0;
 
-    // Update display on page load
-    updateDisplay();
+  let historyFriend1 = JSON.parse(localStorage.getItem('historyFriend1')) || [];
+  let historyFriend2 = JSON.parse(localStorage.getItem('historyFriend2')) || [];
+  let historyFriend3 = JSON.parse(localStorage.getItem('historyFriend3')) || [];
 
-    function saveMoney(friend) {
-      const amount = parseInt(document.getElementById(friend).value);
-      if (!isNaN(amount) && amount > 0) {
-        if (friend === 'friend1') {
-          totalFriend1 += amount;
-          localStorage.setItem('totalFriend1', totalFriend1);
-        } else if (friend === 'friend2') {
-          totalFriend2 += amount;
-          localStorage.setItem('totalFriend2', totalFriend2);
-        } else if (friend === 'friend3') {
-          totalFriend3 += amount;
-          localStorage.setItem('totalFriend3', totalFriend3);
-        }
+  updateDisplay();
 
-        document.getElementById(friend).value = '';
-        showNotification("Money Saved Successfully!");
-        updateDisplay();
-      } else {
-        showNotification("Please enter a valid amount.");
+  function saveMoney(friend) {
+    const amount = parseInt(document.getElementById(friend).value);
+    const date = new Date().toLocaleString();
+
+    if (!isNaN(amount) && amount > 0) {
+      let historyKey = `history${capitalize(friend)}`;
+      let totalKey = `total${capitalize(friend)}`;
+      let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+
+      history.push({ amount, date });
+
+      localStorage.setItem(historyKey, JSON.stringify(history));
+
+      if (friend === 'friend1') {
+        totalFriend1 += amount;
+        localStorage.setItem('totalFriend1', totalFriend1);
+        historyFriend1 = history;
+      } else if (friend === 'friend2') {
+        totalFriend2 += amount;
+        localStorage.setItem('totalFriend2', totalFriend2);
+        historyFriend2 = history;
+      } else if (friend === 'friend3') {
+        totalFriend3 += amount;
+        localStorage.setItem('totalFriend3', totalFriend3);
+        historyFriend3 = history;
       }
-    }
 
-    function updateDisplay() {
-      document.getElementById('totalFriend1').innerText = `Friend 1 Total: ₹${totalFriend1}`;
-      document.getElementById('totalFriend2').innerText = `Friend 2 Total: ₹${totalFriend2}`;
-      document.getElementById('totalFriend3').innerText = `Friend 3 Total: ₹${totalFriend3}`;
-
-      const totalAll = totalFriend1 + totalFriend2 + totalFriend3;
-      document.getElementById('totalAllFriends').innerText = `Total: ₹${totalAll}`;
+      document.getElementById(friend).value = '';
+      showNotification("Money Saved Successfully!");
+      updateDisplay();
+    } else {
+      showNotification("Please enter a valid amount.");
     }
+  }
 
-    function showNotification(message) {
-      const note = document.getElementById('notification');
-      note.innerText = message;
-      note.style.display = 'block';
-      setTimeout(() => {
-        note.style.display = 'none';
-      }, 2000);
-    }
+  function updateDisplay() {
+    document.getElementById('totalFriend1').innerText = `Arnab Total: ₹${totalFriend1}`;
+    document.getElementById('totalFriend2').innerText = `Ayush Total: ₹${totalFriend2}`;
+    document.getElementById('totalFriend3').innerText = `Dip Total: ₹${totalFriend3}`;
+
+    const totalAll = totalFriend1 + totalFriend2 + totalFriend3;
+    document.getElementById('totalAllFriends').innerText = `Total: ₹${totalAll}`;
+
+    updateHistory('historyFriend1', historyFriend1);
+    updateHistory('historyFriend2', historyFriend2);
+    updateHistory('historyFriend3', historyFriend3);
+  }
+
+  function updateHistory(elementId, history) {
+    const container = document.getElementById(elementId);
+    container.innerHTML = '';
+    history.slice().reverse().forEach(entry => {
+      const div = document.createElement('div');
+      div.innerText = `₹${entry.amount} on ${entry.date}`;
+      container.appendChild(div);
+    });
+  }
+
+  function showNotification(message) {
+    const note = document.getElementById('notification');
+    note.innerText = message;
+    note.style.display = 'block';
+    setTimeout(() => {
+      note.style.display = 'none';
+    }, 2000);
+  }
+
+  function capitalize(id) {
+    return id.charAt(0).toUpperCase() + id.slice(1);
+  }
+</script>
   </script>
 
 
